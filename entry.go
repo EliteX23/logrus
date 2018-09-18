@@ -55,7 +55,7 @@ func NewEntry(logger *Logger) *Entry {
 
 // Returns the string representation from the reader and ultimately the
 // formatter.
-func (entry *Entry) String() (string, error) {
+func (entry Entry) String() (string, error) {
 	serialized, err := entry.Logger.Formatter.Format(entry)
 	if err != nil {
 		return "", err
@@ -130,13 +130,13 @@ func (entry Entry) log(level Level, msg string) {
 func (entry Entry) fireHooks() {
 	entry.Logger.mu.Lock()
 	defer entry.Logger.mu.Unlock()
-	err := entry.Logger.Hooks.Fire(entry.Level, &entry)
+	err := entry.Logger.Hooks.Fire(entry.Level, entry)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to fire hook: %v\n", err)
 	}
 }
 
-func (entry *Entry) write() {
+func (entry Entry) write() {
 	entry.Logger.mu.Lock()
 	defer entry.Logger.mu.Unlock()
 	serialized, err := entry.Logger.Formatter.Format(entry)

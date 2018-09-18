@@ -99,7 +99,7 @@ func (f *TextFormatter) isColored() bool {
 }
 
 // Format renders a single log entry
-func (f *TextFormatter) Format(entry *Entry) ([]byte, error) {
+func (f TextFormatter) Format(entry Entry) ([]byte, error) {
 	prefixFieldClashes(entry.Data, f.FieldMap)
 
 	keys := make([]string, 0, len(entry.Data))
@@ -118,7 +118,7 @@ func (f *TextFormatter) Format(entry *Entry) ([]byte, error) {
 		b = &bytes.Buffer{}
 	}
 
-	f.Do(func() { f.init(entry) })
+	f.Do(func() { f.init(&entry) })
 
 	timestampFormat := f.TimestampFormat
 	if timestampFormat == "" {
@@ -143,7 +143,7 @@ func (f *TextFormatter) Format(entry *Entry) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-func (f *TextFormatter) printColored(b *bytes.Buffer, entry *Entry, keys []string, timestampFormat string) {
+func (f *TextFormatter) printColored(b *bytes.Buffer, entry Entry, keys []string, timestampFormat string) {
 	var levelColor int
 	switch entry.Level {
 	case DebugLevel:

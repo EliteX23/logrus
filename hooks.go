@@ -7,7 +7,7 @@ package logrus
 // the logging calls for levels returned from `Levels()` to block.
 type Hook interface {
 	Levels() []Level
-	Fire(*Entry) error
+	Fire(Entry) error
 }
 
 // Internal type for storing the hooks on a logger instance.
@@ -23,7 +23,7 @@ func (hooks LevelHooks) Add(hook Hook) {
 
 // Fire all the hooks for the passed level. Used by `entry.log` to fire
 // appropriate hooks for a log entry.
-func (hooks LevelHooks) Fire(level Level, entry *Entry) error {
+func (hooks LevelHooks) Fire(level Level, entry Entry) error {
 	for _, hook := range hooks[level] {
 		if err := hook.Fire(entry); err != nil {
 			return err
